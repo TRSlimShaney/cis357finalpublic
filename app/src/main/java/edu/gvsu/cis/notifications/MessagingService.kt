@@ -17,19 +17,21 @@ class MessagingService: FirebaseMessagingService() {
         // Check if message contains a notification payload.
         remoteMessage.notification?.let {
             Log.d("MessagingService", "Message Notification Body: ${it.body}")
+
+            val builder = NotificationCompat.Builder(this, "drinkchannel")
+                    .setSmallIcon(R.drawable.clock)
+                    .setContentTitle("${it.title}")
+                    .setContentText("${it.body}")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    // Set the intent that will fire when the user taps the notification
+                    .setAutoCancel(true)
+
+            with(NotificationManagerCompat.from(this)) {
+                notify(23, builder.build())
+            }
         }
 
-        val builder = NotificationCompat.Builder(this, "drinkchannel")
-                .setSmallIcon(R.drawable.clock)
-                .setContentTitle("Take a drink!")
-                .setContentText("Firebase says take a drink.")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                // Set the intent that will fire when the user taps the notification
-                .setAutoCancel(true)
 
-        with(NotificationManagerCompat.from(this)) {
-            notify(23, builder.build())
-        }
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
     }
